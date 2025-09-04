@@ -3,19 +3,19 @@
 // Usage:
 //   npm init -y
 //   npm i puppeteer
-//   node earki_satire_scraper.js
+//   node earki_jokes_scraper.js
 
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
 
-const START_URL = "https://www.earki.co/satire";
+const START_URL = "https://www.earki.co/jokes";
 const BASE = "https://www.earki.co";
 
 // Output
 const OUT_DIR = path.join(__dirname, "data");
-const JSONL_PATH = path.join(OUT_DIR, "earki_satire.jsonl");
-const CSV_PATH = path.join(OUT_DIR, "earki_satire.csv");
+const JSONL_PATH = path.join(OUT_DIR, "earki_jokes.jsonl");
+const CSV_PATH = path.join(OUT_DIR, "earki_jokes.csv");
 
 // Timing (politeness & stability)
 const CLICK_INTERVAL_MS = 5000; // time to wait after each "Load More" click
@@ -40,10 +40,10 @@ function toCsvField(v) {
   return s;
 }
 
-// Extract numeric ID from satire article URL
+// Extract numeric ID from jokes article URL
 function getArticleIdFromUrl(url) {
-  // matches /satire/article/10872/anything
-  const m = url.match(/\/satire\/article\/(\d+)\b/);
+  // matches /jokes/article/10872/anything
+  const m = url.match(/\/jokes\/article\/(\d+)\b/);
   return m ? m[1] : null;
 }
 
@@ -65,7 +65,7 @@ async function collectLinkObjs(page) {
     const set = new Set();
     document
       .querySelectorAll(
-        '.content_group_inner .each.has_image a[href^="/satire/article"]'
+        '.content_group_inner .each.has_image a[href^="/jokes/article"]'
       )
       .forEach((a) => {
         const href = a.getAttribute("href") || "";
@@ -84,7 +84,7 @@ function buildRecord({ url, published_at, headline, content }) {
     article_id: getArticleIdFromUrl(url) || "",
     publisher: "earki",
     source: url,
-    category: "article",
+    category: "jokes",
     published_at: published_at || "",
     headline: headline || "",
     content: content === null ? null : content,
